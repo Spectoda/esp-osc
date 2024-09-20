@@ -100,16 +100,20 @@ int64_t tosc_getNextInt64(tosc_message *o) {
 uint64_t tosc_getNextTimetag(tosc_message *o) { return (uint64_t)tosc_getNextInt64(o); }
 
 float tosc_getNextFloat(tosc_message *o) {
-  // convert from big-endian (network btye order)
+  // convert from big-endian (network byte order)
   const uint32_t i = ntohl(*((uint32_t *)o->marker));
   o->marker += 4;
-  return *((float *)(&i));
+  float f;
+  memcpy(&f, &i, 4);
+  return f;
 }
 
 double tosc_getNextDouble(tosc_message *o) {
   const uint64_t i = ntohll(*((uint64_t *)o->marker));
   o->marker += 8;
-  return *((double *)(&i));
+  double d;
+  memcpy(&d, &i, 8);
+  return d;
 }
 
 const char *tosc_getNextString(tosc_message *o) {
